@@ -3,7 +3,7 @@ NO CONTROLLER:
     public ResponseEntity buscar(@PageableDefault(page = 0, size = 10)
                                  @SortDefault.SortDefaults(
                                  @SortDefault(sort = "updatedAt", direction = Sort.Direction.ASC))
-								 Integer page) {
+				 Integer page) {
 
         return ResponseEntity.ok(this.solicitationService.pesquisa(page));
     }
@@ -11,12 +11,11 @@ NO CONTROLLER:
 NO SERVICE :
   public List<UsuarioDto> pesquisa(Integer page) {
        
-         List<TransactionPresenter> transactions = this.transactionService.findByStatusActive();
+        List<TransactionPresenter> transactions = this.transactionService.findByStatusActive();
 
         Pageable pageableSolicitation = PageRequest.of( page , pageSize=3 , Sort.by("id").descending());
 		
         List<Solicitation> solicitations = new ArrayList<>();
-
         for (TransactionPresenter trans : transactions) {
             solicitations.addAll(this.solicitationRepository
                     .findByUser(trans.getId(), pageableSolicitation));
