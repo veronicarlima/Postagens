@@ -1,0 +1,37 @@
+NO CONTROLLER:
+@GetMapping(value = "/usuarios")
+    public ResponseEntity buscar(@PageableDefault(page = 0, size = 10)
+                                 @SortDefault.SortDefaults(
+                                 @SortDefault(sort = "updatedAt", direction = Sort.Direction.ASC))
+								 Integer page) {
+
+        return ResponseEntity.ok(this.solicitationService.pesquisa(page));
+    }
+	
+NO SERVICE :
+  public List<UsuarioDto> pesquisa(Integer page) {
+       
+         List<TransactionPresenter> transactions = this.transactionService.findByStatusActive();
+
+        Pageable pageableSolicitation = PageRequest.of( page , pageSize=3 , Sort.by("id").descending());
+		
+        List<Solicitation> solicitations = new ArrayList<>();
+
+        for (TransactionPresenter trans : transactions) {
+            solicitations.addAll(this.solicitationRepository
+                    .findByUser(trans.getId(), pageableSolicitation));
+        }
+        return transactions;
+    }
+	
+NO Repository
+
+@Repository
+public interface SolicitationRepository extends JpaRepository<Solicitation, Long>, PagingAndSortingRepository<Solicitation, Long> {
+ List<Solicitation> findByUser(Long idTransaction,Pageable pageableSolicitation);
+ 
+ 
+No POSTMAN 
+Metodo Get
+http://localhost:8080/estudos/v1/solicitations/usuarios?page=1
+Resposta será uma lista de pagina 1 limitada a 3 itens 
